@@ -1,4 +1,5 @@
 #include "kalman_filter.h"
+#include<iostream>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -9,7 +10,7 @@ using namespace std;
  *   VectorXd or MatrixXd objects with zeros upon creation.
  */
 
-VectorXd X_;
+VectorXd x_;
 MatrixXd P_, F_, H_, R_, Q_;
 
 KalmanFilter::KalmanFilter() {}
@@ -32,6 +33,12 @@ void KalmanFilter::Predict() {
    */
   x_ = F_ * x_;
   P_ = F_ * P_ * F_.transpose() + Q_;
+  cout << "Predict function called " << endl;
+  cout << "x" << endl;
+  cout << x_ << endl;
+  cout << "P" << endl;
+  cout << P_  << endl;
+  
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
@@ -50,31 +57,46 @@ void KalmanFilter::Update(const VectorXd &z) {
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I-K*H_)*P_;
+  cout << "Laser update" << endl;
+  cout << "x" << endl;
+  cout << x_ << endl;
+  cout << "P" << endl;
+  cout << P_ << endl;
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /**
    * TODO: update the state by using Extended Kalman Filter equations
    */
-  MatrixXd Hj (3,4);
-  float px = z(0), py = z(1), vx = z(2), vy = z(3), 
-  c1 = px*px, c2 = sqrt(c1), c3 = c1*c2;
-  if(fabs(c1)>0.0001){
-    Hj << (px/c2), (py/c2), 0, 0,
-          -(py/c1), (px/c1), 0, 0,
-          py*(vx*py - vy*px)/c3, px*(px*vy-py*vx)/c3, px/c2, py/c3;
-  }
-  VectorXd z_pred = H_ * x_;
-  VectorXd y = z - z_pred;
+  VectorXd h = VectorXd(3);
+  h << sqrt(x_(0) * x_(0) + x_(1) * x_(1)),
+          atan2(x_(1), x_(0)),
+          (x_(0) * x_(2) + x_(1) * x_(3)) / h(0);
+
+  cout << "update Radar update" << endl;
+  cout << "Hj" << endl;
+  cout << h << endl;
+  VectorXd y = z - h;
+  y(1) = atan2(sin(y(1)), cos(y(1)));
+  cout << "y" << endl;
+  cout << y << endl;
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_*P_*Ht + R_;
   MatrixXd Si = S.inverse();
+  cout << "Si" << endl;
+  cout << Si << endl;
   MatrixXd pHt = P_*Ht;
   MatrixXd K = pHt*Si;
+  cout << K << endl;
+  cout << y << endl;
 
   x_ = x_ + (K* y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I-K*H_)*P_;
+  cout << "x" << endl;
+  cout << x_ << endl;
+  cout << "P" << endl;
+  cout << P_ << endl;
 
 }

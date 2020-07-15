@@ -12,6 +12,7 @@ using std::vector;
 
 // for convenience
 using json = nlohmann::json;
+using namespace std;
 
 // Checks if the SocketIO event has JSON data.
 // If there is data the JSON object in string format will be returned,
@@ -126,7 +127,7 @@ int main() {
           estimate(3) = v2;
         
           estimations.push_back(estimate);
-
+          // cout << "Calculating RMS" << endl;
           VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
 
           json msgJson;
@@ -153,7 +154,7 @@ int main() {
   h.onConnection([&h](uWS::WebSocket<uWS::SERVER> ws, uWS::HttpRequest req) {
     std::cout << "Connected!!!" << std::endl;
   });
-
+  // std::cout << "This is fine" << std::endl;
   h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, 
                          char *message, size_t length) {
     ws.close();
