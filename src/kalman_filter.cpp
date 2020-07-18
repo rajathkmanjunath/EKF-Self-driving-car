@@ -71,7 +71,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd h = VectorXd(3);
   h << sqrt(x_(0) * x_(0) + x_(1) * x_(1)),
         atan2(x_(1), x_(0)),
-        (x_(0) * x_(2) + x_(1) * x_(3)) / h(0);
+        (x_(0) * x_(2) + x_(1) * x_(3)) / (sqrt(x_(0) * x_(0) + x_(1) * x_(1)));
 
   cout << "update Radar update" << endl;
   cout << "h" << endl;
