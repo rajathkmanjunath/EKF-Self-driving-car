@@ -24,10 +24,10 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
      cout << "Sizes  of estimations and ground truths don't match" << endl;
      return rmse;
   }
-   // cout << "Matrix dimensionality check" << endl;
-   // cout << estimations.size() << " " << ground_truth.size() << endl;
+  cout << "Matrix dimensionality check" << endl;
+  cout << estimations.size() << " " << ground_truth.size() << endl;
   for(int i=0; i<(int)estimations.size(); i++){
-   //   cout << estimations[i] << " " << ground_truth[i] << endl;
+      cout << estimations[i].size() << " " << ground_truth[i].size() << endl;
      VectorXd res = estimations[i] - ground_truth[i];
      res = res.array()*res.array();
      rmse+=res;
