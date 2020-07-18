@@ -187,6 +187,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     if(measurement_pack.sensor_type_ == MeasurementPackage::LASER){
       // Laser updates
       ekf_.R_ = R_laser_;
+      ekf_.H_ = H_laser_;
       cout << "laser updates" << endl;
       ekf_.Update(measurement_pack.raw_measurements_);
       cout << "Laser update complete" << endl;
