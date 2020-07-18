@@ -77,7 +77,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   cout << "h" << endl;
   cout << h << endl;
   VectorXd y = z - h;
-  y(1) = atan2(sin(y(1)), cos(y(1)));
+  y(1) -= (2 * M_PI) * floor((y[1] + M_PI) / (2 * M_PI))
   cout << "y" << endl;
   cout << y << endl;
   cout << "Hj" << endl;
