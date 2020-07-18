@@ -33,11 +33,6 @@ void KalmanFilter::Predict() {
    */
   x_ = F_ * x_;
   P_ = F_ * P_ * F_.transpose() + Q_;
-  //cout << "Predict function called " << endl;
-  //cout << "x" << endl;
-  //cout << x_ << endl;
-  //cout << "P" << endl;
-  //cout << P_  << endl;
   
 }
 
@@ -53,15 +48,10 @@ void KalmanFilter::Update(const VectorXd &z) {
   MatrixXd pHt = P_*Ht;
   MatrixXd K = pHt*Si;
 
-  x_ = x_ + (K* y);
+  x_ = x_ + K*y;
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I-K*H_)*P_;
-  /*cout << "Laser update" << endl;
-  cout << "x" << endl;
-  cout << x_ << endl;
-  cout << "P" << endl;
-  cout << P_ << endl;*/
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
@@ -73,32 +63,19 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
         atan2(x_(1), x_(0)),
         (x_(0) * x_(2) + x_(1) * x_(3)) / (sqrt(x_(0) * x_(0) + x_(1) * x_(1)));
 
-  /*cout << "update Radar update" << endl;
-  cout << "h" << endl;
-  cout << h << endl;*/
   VectorXd y = z - h;
-  y(1) = atan2(sin(y(1)), cos(y(1)));
-  /*cout << "y" << endl;
-  cout << y << endl;
-  cout << "Hj" << endl;
-  cout << H_ << endl;*/
+  //y(1) = atan2(sin(y(1)), cos(y(1)));
+
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_*P_*Ht + R_;
   MatrixXd Si = S.inverse();
-  /*cout << "Si" << endl;
-  cout << Si << endl;*/
+
   MatrixXd pHt = P_*Ht;
   MatrixXd K = pHt*Si;
-  /*cout << K << endl;
-  cout << y << endl;*/
 
   x_ = x_ + (K* y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I-K*H_)*P_;
-  /*cout << "x" << endl;
-  cout << x_ << endl;
-  cout << "P" << endl;
-  cout << P_ << endl;*/
-
+ 
 }
